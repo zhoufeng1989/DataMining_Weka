@@ -1,5 +1,5 @@
 from weka.filters import Filter
-from load import load_arff
+from utils import load_arff
 import numpy
 
 
