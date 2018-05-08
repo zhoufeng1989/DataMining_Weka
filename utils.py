@@ -1,4 +1,5 @@
 from weka.core.converters import Loader
+from weka.core.dataset import Instances
 
 
 def load_arff(file_name):
@@ -19,9 +20,10 @@ def install_smote():
     jvm.stop()
 
 
-def class_distribution(data):
+def data_distribution(data):
+    data_summary = Instances.summary(data)
     class_stats = data.attribute_stats(data.class_index)
-    stats = ["class distribution"]
+    stats = ["data summary", data_summary, "class distribution"]
     for (label, count) in zip(data.class_attribute.values, class_stats.nominal_counts):
         stats.append(f"{label}: {count}")
     stats.append(f"total: {data.num_instances}")

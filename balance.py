@@ -1,5 +1,4 @@
 from weka.filters import Filter
-from utils import load_arff, class_distribution
 
 
 def balance(data, classname, options):
@@ -11,6 +10,7 @@ def balance(data, classname, options):
 
 
 if __name__ == "__main__":
+    from utils import load_arff, data_distribution
     import sys
     from weka.core import jvm
     from config import rebalance_configs
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     jvm.start(packages=True, max_heap_size="8g")
 
     train_data = load_arff(train_file)
-    dist = class_distribution(train_data)
+    dist = data_distribution(train_data)
     print(dist)
 
     for config in rebalance_configs:
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         options = config["option"]
         print(options)
         new_train_data = balance(train_data, classname, options)
-        dist = class_distribution(new_train_data)
+        dist = data_distribution(new_train_data)
         print(key)
         print(dist)
 
