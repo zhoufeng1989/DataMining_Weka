@@ -66,7 +66,7 @@ if __name__ == "__main__":
                 end_time = time.time()
                 duration = "{:.3f}".format(end_time - start_time)
                 count += 1
-                progress_output.write(f"completed {count} pipeline[s], current is {key}, cost {duration} seconds\n")
+                progress_output.write(f"completed {count}/{config.total_pipelines} pipelines, current is {key}, cost {duration} seconds\n")
                 #except Exception as error:
                 #    print("error happens", error)
                 eval_measures = [key]
