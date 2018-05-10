@@ -94,7 +94,7 @@ def generate_J48_config():
 # MLP
 def generate_mlp_config():
     options = {
-        "learning_rate": [0.03, 0.3, 3],
+        "learning_rate": [0.3, 1, 3],
         "training_time": [50, 400]
     }
     config = []
@@ -205,7 +205,6 @@ knn_configs = generate_knn_config()
 
 model_configs = (
     bayes_configs + J48_configs +
-    mlp_configs + smv_configs + knn_configs)
+    smv_configs + knn_configs)
 
 total_pipelines = len(balance_configs) * len(fs_configs) * len(model_configs)
-print(total_pipelines)
