@@ -161,7 +161,7 @@ def generate_smv_config():
                 "-K", kernel_option,
                 "-calibrator", "weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4"
             ]
-            key = f"SMO-C-{c}-RBFKernel-G-{exponent}"
+            key = f"SMO-C-{c}-RBFKernel-G-{gamma}"
             config.append({
                 "option": option,
                 "key": key,
