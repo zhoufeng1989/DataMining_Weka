@@ -1,7 +1,7 @@
 # Data Balance
 def generate_balance_config():
     ratios = [0.7, 1.0]
-    resample_percentages = [50, 100]
+    resample_percentages = [50, 80, 100]
     config = []
     for ratio in ratios:
         for percentage in resample_percentages:
@@ -74,8 +74,8 @@ def generate_bayes_config():
 # Decision Tree
 def generate_J48_config():
     options = {
-        "confidence_factor": [0.1, 0.2, 0.3, 0.4],
-        "min_num_obj": [2, 3, 4, 5]
+        "confidence_factor": [0.001, 0.005, 0.025, 0.1, 0.2, 0.3, 0.4],
+        "min_num_obj": [2, 3, 4, 5, 10, 15, 20, 30, 40]
     }
     config = []
 
@@ -87,6 +87,31 @@ def generate_J48_config():
                 "option": option,
                 "key": key,
                 "model_name": "weka.classifiers.trees.J48"
+            })
+    return config
+
+
+def generate_randomforest_config():
+    model_name = "weka.classifiers.trees.RandomForest"
+    percentages = [30, 50, 80, 100]
+    iters = [5, 10, 20, 40, 80, 100, 160, 200]
+    config = []
+    for percentage in percentages:
+        for iter_count in iters:
+            option = [
+                "-P", str(percentage),
+                "-I", str(iter_count),
+                "-num-slots", "1",
+                "-K", "0",
+                "-M", "1.0",
+                "-V", "0.001",
+                "-S", "1"
+            ]
+            key = f"RF-P-{percentage}-I-{iter_count}"
+            config.append({
+                "option": option,
+                "key": key,
+                "model_name": model_name
             })
     return config
 
@@ -120,9 +145,9 @@ def generate_mlp_config():
 # SVM
 def generate_smv_config():
     options = {
-        "c": [0.1, 0.5, 2.5],
-        "exponent": [2, 4, 6],
-        "gamma": [0.1, 0.5, 2.5, 10]
+        "c": [0.3, 1, 3, 6, 12],
+        "exponent": [1, 2, 4, 8, 16, 16],
+        "gamma": [0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12, 12]
     }
     config = []
     for c in options["c"]:
@@ -172,22 +197,25 @@ def generate_smv_config():
 
 def generate_knn_config():
     options = {
-        "k": [1, 3, 5],
-        "distance_weight": [None, "-I", "-F"]
+        "k": [3, 5, 8, 10, 15, 20, 25],
+        "distance_function": [
+            "weka.core.EuclideanDistance -R first-last",
+            "weka.core.ChebyshevDistance -R first-last",
+            "weka.core.ManhattanDistance -R first-last",
+            "weka.core.MinkowskiDistance -P 2.0 -R first-last",
+        ]
+        # "distance_weight": [None, "-I", "-F"]
     }
     config = []
 
     for k in options["k"]:
-        for distance_weight in options["distance_weight"]:
+        for distance_function in options["distance_function"]:
             option = [
                 "-K", str(k),
                 "-W", "0",
-                "-A", "weka.core.neighboursearch.LinearNNSearch -A \"weka.core.EuclideanDistance -R first-last\""
+                "-A", f"weka.core.neighboursearch.LinearNNSearch -A \"{distance_function}\""
             ]
-            key = f"IBk-K-{k}"
-            if distance_weight:
-                option.append(distance_weight)
-                key += f"-DW{distance_weight}"
+            key = f"IBk-K-{k}-A-{distance_function.split()[0].split('.')[-1]}"
             config.append({
                 "option": option,
                 "key": key,
@@ -202,9 +230,21 @@ J48_configs = generate_J48_config()
 mlp_configs = generate_mlp_config()
 smv_configs = generate_smv_config()
 knn_configs = generate_knn_config()
-
+rf_configs = generate_randomforest_config()
 model_configs = (
-    bayes_configs + J48_configs +
+    rf_configs + J48_configs +
     smv_configs + knn_configs)
-
+dataset_count = len(balance_configs) * len(fs_configs)
+smv_pipelines = dataset_count * len(smv_configs)
+J48_pipelines = dataset_count * len(J48_configs)
+knn_pipelines = dataset_count * len(knn_configs)
+rf_pipelines = dataset_count * len(rf_configs)
 total_pipelines = len(balance_configs) * len(fs_configs) * len(model_configs)
+
+if __name__ == "__main__":
+    print(f"dataset count is {dataset_count}")
+    print(f"total pipeline is {total_pipelines}")
+    print(f"SMV pipeline is {smv_pipelines}")
+    print(f"J48 pipeline is {J48_pipelines}")
+    print(f"KNN pipeline is {knn_pipelines}")
+    print(f"random forest pipeline is {rf_pipelines}")
