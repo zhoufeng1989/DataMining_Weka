@@ -10,13 +10,6 @@ def generate_balance_config():
             key = f"Resample-B-{ratio}-Z-{percentage}"
             config.append({"classname": classname, "option": options, "key": key})
 
-    # SMOTE is slow.
-    # for percentage in resample_percentages:
-    #     classname = "weka.filters.supervised.instance.SMOTE"
-    #     options = ["-C", "last", "-K", "5", "-P", str(percentage), "-S", "1"]
-    #     key = f"SMOTE-P-{percentage}"
-    #     config.append({"classname": classname, "option": options, "key": key})
-
     return config
 
 
@@ -204,7 +197,6 @@ def generate_knn_config():
             "weka.core.ManhattanDistance -R first-last",
             "weka.core.MinkowskiDistance -P 2.0 -R first-last",
         ]
-        # "distance_weight": [None, "-I", "-F"]
     }
     config = []
 
