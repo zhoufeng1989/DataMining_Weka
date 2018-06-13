@@ -14,7 +14,7 @@ def pipeline(
     keys = []
     data_description = {}
     # Handle Missing Values.
-    train_data, test_data = remove_missing_values(train_data, test_data, 0.2)
+    train_data, test_data = remove_missing_values(train_data, test_data, 0.8)
     train_data = replace_missing_values(train_data)
 
     # Rebalance Data
@@ -52,9 +52,9 @@ if __name__ == "__main__":
     train_data = load_arff(train_file)
     test_data = load_arff(test_file)
     evaluations = {}
-    evaluation_measure_output = open("evaluation.csv", "w")
-    evaluation_detail_output = open("evaluation.txt", "w")
-    progress_output = open("progress.txt", "w")
+    evaluation_measure_output = open("evaluation.csv", "a")
+    evaluation_detail_output = open("evaluation.txt", "a")
+    progress_output = open("progress.txt", "a")
     count = 0
     for balance_config in config.balance_configs:
         for fs_config in config.fs_configs:

@@ -87,7 +87,7 @@ def generate_J48_config():
 def generate_randomforest_config():
     model_name = "weka.classifiers.trees.RandomForest"
     percentages = [30, 50, 80, 100]
-    iters = [5, 10, 20, 40, 80, 100, 160, 200]
+    iters = [5, 10, 20, 40, 80, 100, 160]
     config = []
     for percentage in percentages:
         for iter_count in iters:
@@ -139,8 +139,8 @@ def generate_mlp_config():
 def generate_smv_config():
     options = {
         "c": [0.3, 1, 3, 6, 12],
-        "exponent": [1, 2, 4, 8, 16, 16],
-        "gamma": [0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12, 12]
+        "exponent": [1, 2, 4, 8],
+        "gamma": [0.1, 0.2, 0.4, 0.8, 1.6, 3.2]
     }
     config = []
     for c in options["c"]:
@@ -225,18 +225,20 @@ knn_configs = generate_knn_config()
 rf_configs = generate_randomforest_config()
 model_configs = (
     rf_configs + J48_configs +
-    smv_configs + knn_configs)
+    bayes_configs + knn_configs)
 dataset_count = len(balance_configs) * len(fs_configs)
 smv_pipelines = dataset_count * len(smv_configs)
+bayes_pipelines = dataset_count * len(bayes_configs)
 J48_pipelines = dataset_count * len(J48_configs)
 knn_pipelines = dataset_count * len(knn_configs)
 rf_pipelines = dataset_count * len(rf_configs)
 total_pipelines = len(balance_configs) * len(fs_configs) * len(model_configs)
 
+
 if __name__ == "__main__":
     print(f"dataset count is {dataset_count}")
     print(f"total pipeline is {total_pipelines}")
-    print(f"SMV pipeline is {smv_pipelines}")
+    print(f"NB pipeline is {bayes_pipelines}")
     print(f"J48 pipeline is {J48_pipelines}")
     print(f"KNN pipeline is {knn_pipelines}")
     print(f"random forest pipeline is {rf_pipelines}")
